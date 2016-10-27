@@ -1,9 +1,12 @@
 package com.novelties.flare.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -12,7 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.novelties.flare.BitmapUtil;
 import com.novelties.flare.R;
 import com.novelties.flare.camera.CameraHelper;
@@ -21,7 +27,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Permission;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
@@ -34,8 +42,8 @@ public class EditActivity extends AppCompatActivity {
 
     private Button btnGallery;
     private Button btnCapture;
-    private Button btnInfo;
 
+    private PermissionListener permissionlistener;
     private GLSurfaceView surfaceView;
 
     private CameraHelper cameraHelper;
@@ -46,14 +54,27 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+
         initView();
         initEvent();
     }
 
     private void initView() {
+        PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            Toast.makeText(EditActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+        }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(EditActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+    };
+
         btnGallery = (Button) findViewById(R.id.btn_gallery);
         btnCapture = (Button) findViewById(R.id.btn_capture);
-        btnInfo = (Button) findViewById(R.id.btn_info);
 
         surfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
 
@@ -65,11 +86,11 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void initEvent() {
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+        new TedPermission(this)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET)
+                .check();
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,6 +240,7 @@ public class EditActivity extends AppCompatActivity {
         private int mCurrentCameraId = 0;
         private Camera mCameraInstance;
 
+
         public void onResume() {
             setUpCamera(mCurrentCameraId);
         }
@@ -233,24 +255,26 @@ public class EditActivity extends AppCompatActivity {
             setUpCamera(mCurrentCameraId);
         }
 
+
         private void setUpCamera(final int id) {
             mCameraInstance = getCameraInstance(id);
-            Camera.Parameters parameters = mCameraInstance.getParameters();
+
+            Parameters parameters = mCameraInstance.getParameters();
             // TODO adjust by getting supportedPreviewSizes and then choosing
             // the best one for screen size (best fill screen)
             if (parameters.getSupportedFocusModes().contains(
                     Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             }
             mCameraInstance.setParameters(parameters);
 
-            int orientation = cameraHelper.getCameraDisplayOrientation(
-                    EditActivity.this, mCurrentCameraId);
+            int orientation = cameraHelper.getCameraDisplayOrientation(EditActivity.this, mCurrentCameraId);
             CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
             cameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
-            boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
+            boolean flipHorizontal = cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT;
             gpuImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false);
         }
+
 
         /** A safe way to get an instance of the Camera object. */
         private Camera getCameraInstance(final int id) {
