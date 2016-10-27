@@ -42,6 +42,7 @@ public class EditActivity extends AppCompatActivity {
 
     private Button btnGallery;
     private Button btnCapture;
+    private Button btnHelp;
 
     private PermissionListener permissionlistener;
     private GLSurfaceView surfaceView;
@@ -75,6 +76,7 @@ public class EditActivity extends AppCompatActivity {
 
         btnGallery = (Button) findViewById(R.id.btn_gallery);
         btnCapture = (Button) findViewById(R.id.btn_capture);
+        btnHelp = (Button) findViewById(R.id.btn_help);
 
         surfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
 
@@ -116,6 +118,14 @@ public class EditActivity extends AppCompatActivity {
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+            }
+        });
+
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditActivity.this, HelpActivty.class);
+                startActivity(intent);
             }
         });
     }
