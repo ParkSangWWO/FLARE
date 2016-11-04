@@ -44,7 +44,6 @@ public class EditActivity extends AppCompatActivity {
     private Button btnCapture;
     private Button btnHelp;
 
-    private PermissionListener permissionlistener;
     private GLSurfaceView surfaceView;
 
     private CameraHelper cameraHelper;
@@ -54,25 +53,11 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
-
         initView();
         initEvent();
-    }
+     }
 
     private void initView() {
-        PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            Toast.makeText(EditActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-        }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                Toast.makeText(EditActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-            }
-
-    };
 
         btnGallery = (Button) findViewById(R.id.btn_gallery);
         btnCapture = (Button) findViewById(R.id.btn_capture);
@@ -88,11 +73,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void initEvent() {
-        new TedPermission(this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET)
-                .check();
+
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,13 +114,15 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        camera.onResume();
+        if(camera != null) {
+            camera.onResume();
+        }
     }
 
     @Override
     protected void onPause() {
-        camera.onPause();
         super.onPause();
+        camera.onPause();
     }
 
     private void takePicture() {
@@ -298,9 +281,14 @@ public class EditActivity extends AppCompatActivity {
         }
 
         private void releaseCamera() {
-            mCameraInstance.setPreviewCallback(null);
-            mCameraInstance.release();
-            mCameraInstance = null;
+            if (mCameraInstance != null) {
+                mCameraInstance.stopPreview();
+                mCameraInstance.setPreviewCallback(null);
+                mCameraInstance.lock();
+                mCameraInstance.release();
+                mCameraInstance=null;
+                invalidateOptionsMenu();
+            }
         }
     }
 }
