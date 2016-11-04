@@ -7,4 +7,76 @@
     tools:context="com.novelties.flare.activities.HelpActivty">
 
 
+    <ImageView
+        android:id="@+id/help_share"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/icon_shares"/>
+
+    <TextView
+        android:id="@+id/txt_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/help_share"
+        android:layout_margin="20dp"
+        android:layout_centerInParent="true"
+        android:text="자신이 만든 필터를 코드로 공유할 수 있습니다 !"/>
+
+    <ImageView
+        android:id="@+id/help_refresh"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:layout_below="@+id/txt_share"
+        android:src="@drawable/icon_refresh"/>
+
+    <TextView
+        android:id="@+id/txt_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/help_refresh"
+        android:layout_margin="20dp"
+        android:layout_centerInParent="true"
+        android:text="만들고 있는 필터를 초기값으로 되돌립니다 !"/>
+
+    <ImageView
+        android:id="@+id/help_download"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:layout_below="@+id/txt_refresh"
+        android:src="@drawable/icon_downloads"/>
+
+    <TextView
+        android:id="@+id/txt_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/help_download"
+        android:layout_margin="20dp"
+        android:layout_centerInParent="true"
+        android:text="공유받은 필터값을 복사해서 붙여넣어 적용시킬 수 있습니다!"/>
+
+    <ImageView
+        android:id="@+id/help_rotate"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:layout_below="@+id/txt_download"
+        android:src="@drawable/iv_rotate"/>
+
+
+    <TextView
+        android:id="@+id/txt_rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/help_rotate"
+        android:layout_margin="20dp"
+        android:layout_centerInParent="true"
+        android:text="수정중인 사진을 90도 회전시킬 수 있습니다!"/>
 </RelativeLayout>
