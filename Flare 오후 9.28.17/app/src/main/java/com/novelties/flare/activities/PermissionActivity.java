@@ -22,7 +22,7 @@ public class PermissionActivity extends AppCompatActivity {
        PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(PermissionActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PermissionActivity.this, "퍼미션 완료", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PermissionActivity.this, EditActivity.class);
                 startActivity(intent);
                 finish();
@@ -30,13 +30,13 @@ public class PermissionActivity extends AppCompatActivity {
 
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                Toast.makeText(PermissionActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PermissionActivity.this, "허가가 거절되었습니다.\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
             }
 
         };
         new TedPermission(this)
                 .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setDeniedMessage("만약 허용하지 않으면, 접속할 수 없습니다.\n\n[설정] > [허가] 에서 앱을 허용해주세요.")
                 .setPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET)
                 .check();
     }
